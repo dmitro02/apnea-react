@@ -1,35 +1,75 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useMemo, useReducer } from 'react';
+import './App.css';
+import Timer from './utils/timer';
+
+const DURATION = 8;
 
 function App() {
-  const [count, setCount] = useState(0)
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case 'start':
+        return { ...state, isStarted: true };
+      case 'end':
+        return { ...state, isStarted: false, isStopped: action.payload };
+      case 'stop':
+        return { ...state, isStarted: false, isStopped: true };
+      case 'reset':
+        return { ...state, isStopped: false, elapsed: 0 };
+      case 'setElapsed':
+        return { ...state, elapsed: action.payload };
+      default:
+        return state;
+    }
+  };
+
+  const [state, dispatch] = useReducer(reducer, {
+    elapsed: 0,
+    isStarted: false,
+    isStopped: false,
+  });
+
+  const timer = useMemo(
+    () =>
+      new Timer(DURATION, (elapsed) =>
+        dispatch({ type: 'setElapsed', payload: elapsed })
+      ),
+    []
+  );
+
+  const start = async () => {
+    dispatch({ type: 'start' });
+    const isInterrupted = await timer.start();
+    dispatch({ type: 'end', payload: isInterrupted });
+  };
+
+  const stop = () => {
+    timer.stop();
+    dispatch({ type: 'stop' });
+  };
+
+  const reset = () => {
+    timer.reset();
+    dispatch({ type: 'reset' });
+  };
+
+  const { isStarted, isStopped, elapsed } = state;
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React + Dmitro</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+        <button onClick={start} disabled={isStarted}>
+          start
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+        <button
+          onClick={isStopped ? reset : stop}
+          disabled={!isStarted && !isStopped}
+        >
+          {isStopped ? 'reset' : 'stop'}
+        </button>
+        <p>{elapsed}</p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
