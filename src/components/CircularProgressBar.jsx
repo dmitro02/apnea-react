@@ -21,7 +21,7 @@ function CircularProgressBar({ radius = RADIUS, value, max }) {
         fill="transparent"
         stroke="#e0e0e0"
         strokeWidth="100"
-      ></circle>
+      />
       <circle
         r={radius}
         cx="150"
@@ -32,7 +32,17 @@ function CircularProgressBar({ radius = RADIUS, value, max }) {
         strokeDashoffset={strokeDashoffset}
         fill="transparent"
         strokeDasharray={circumference}
-      ></circle>
+      />
+      <text
+        x="0px"
+        y="0px"
+        fill="#6bdba7"
+        fontSize="52px"
+        fontWeight="bold"
+        style={{ transform: 'rotate(90deg) translate(135px, -130px)' }}
+      >
+        {value}
+      </text>
     </svg>
   );
 }

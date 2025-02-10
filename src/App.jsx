@@ -3,7 +3,7 @@ import './App.css';
 import Timer from './utils/timer';
 import CircularProgressBar from './components/CircularProgressBar';
 
-const DURATION = 8;
+const DURATION = 10;
 
 function App() {
   const [elapsed, setElapsed] = useState(0);
