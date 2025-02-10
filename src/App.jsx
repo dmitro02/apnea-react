@@ -1,70 +1,45 @@
-import { useMemo, useReducer } from 'react';
+import { useMemo, useState } from 'react';
 import './App.css';
 import Timer from './utils/timer';
+import CircularProgressBar from './components/CircularProgressBar';
 
 const DURATION = 8;
 
 function App() {
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case 'start':
-        return { ...state, isStarted: true };
-      case 'end':
-        return { ...state, isStarted: false, isStopped: action.payload };
-      case 'stop':
-        return { ...state, isStarted: false, isStopped: true };
-      case 'reset':
-        return { ...state, isStopped: false, elapsed: 0 };
-      case 'setElapsed':
-        return { ...state, elapsed: action.payload };
-      default:
-        return state;
-    }
-  };
+  const [elapsed, setElapsed] = useState(0);
+  const [isStarted, setIsStarted] = useState(false);
 
-  const [state, dispatch] = useReducer(reducer, {
-    elapsed: 0,
-    isStarted: false,
-    isStopped: false,
-  });
-
-  const timer = useMemo(
-    () =>
-      new Timer(DURATION, (elapsed) =>
-        dispatch({ type: 'setElapsed', payload: elapsed })
-      ),
-    []
-  );
+  const timer = useMemo(() => new Timer(DURATION, setElapsed), []);
 
   const start = async () => {
-    dispatch({ type: 'start' });
-    const isInterrupted = await timer.start();
-    dispatch({ type: 'end', payload: isInterrupted });
+    setElapsed(0);
+    setIsStarted(true);
+    await timer.start();
+    setIsStarted(false);
   };
 
   const stop = () => {
     timer.stop();
-    dispatch({ type: 'stop' });
+    setIsStarted(false);
   };
 
   const reset = () => {
     timer.reset();
-    dispatch({ type: 'reset' });
+    setElapsed(0);
   };
-
-  const { isStarted, isStopped, elapsed } = state;
 
   return (
     <>
+      <CircularProgressBar value={elapsed} max={DURATION} />
       <div className="card">
         <button onClick={start} disabled={isStarted}>
           start
         </button>
         <button
-          onClick={isStopped ? reset : stop}
-          disabled={!isStarted && !isStopped}
+          onClick={isStarted ? stop : reset}
+          disabled={!isStarted && !elapsed}
         >
-          {isStopped ? 'reset' : 'stop'}
+          {isStarted ? 'stop' : 'reset'}
         </button>
         <p>{elapsed}</p>
       </div>

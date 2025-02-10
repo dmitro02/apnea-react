@@ -4,13 +4,8 @@ class Timer {
     this.interval = interval;
     this.onInterval = onInterval;
     this.elapsed = 0;
-    this.isInterrupted = false;
-
-    console.log('timer created ', this.ID);
-    
+    this.isInterrupted = false;    
   }
-
-  ID = Math.random().toString(36).substr(2, 9);
 
   stop() {
     this.isInterrupted = true;
