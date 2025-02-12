@@ -1,9 +1,17 @@
-const RADIUS = 100;
-
-function CircularProgressBar({ radius = RADIUS, value, max }) {
+function CircularProgressBar({
+  radius,
+  value,
+  max,
+  color,
+  alertColor,
+  showAlert,
+  recordTime,
+}) {
   const circumference = 2 * Math.PI * radius;
   const progress = (value * 100) / max;
   const strokeDashoffset = circumference * ((100 - progress) / 100);
+  const strokeDashoffsetRecord =
+    circumference * ((100 - (recordTime * 100) / max) / 100);
 
   return (
     <svg
@@ -14,35 +22,63 @@ function CircularProgressBar({ radius = RADIUS, value, max }) {
       xmlns="http://www.w3.org/2000/svg"
       style={{ transform: 'rotate(-90deg)' }}
     >
-      <circle
+      <circle // background circle
         r={radius}
         cx="150"
         cy="150"
         fill="transparent"
         stroke="#e0e0e0"
-        strokeWidth="100"
+        strokeWidth="120"
       />
-      <circle
+      <circle // progress circle 2
         r={radius}
         cx="150"
         cy="150"
-        stroke="#76e5b1"
-        strokeWidth="100"
+        stroke="green"
+        strokeWidth="114"
         strokeLinecap="butt"
         strokeDashoffset={strokeDashoffset}
         fill="transparent"
         strokeDasharray={circumference}
       />
-      <text
-        x="0px"
-        y="0px"
-        fill="#6bdba7"
-        fontSize="52px"
-        fontWeight="bold"
-        style={{ transform: 'rotate(90deg) translate(135px, -130px)' }}
+      <circle // progress circle
+        r={radius}
+        cx="150"
+        cy="150"
+        stroke={color}
+        strokeWidth="114"
+        strokeLinecap="butt"
+        strokeDashoffset={
+          recordTime ? strokeDashoffsetRecord : strokeDashoffset
+        }
+        fill="transparent"
+        strokeDasharray={circumference}
+      />
+
+      <circle // center circle
+        r="22"
+        cx="150"
+        cy="150"
+        fill="#e0e0e0"
+        strokeWidth="0"
+      />
+      <circle // alert circle
+        r={radius + 66}
+        cx="150"
+        cy="150"
+        fill="transparent"
+        stroke={alertColor}
+        strokeWidth="8"
+        opacity="0"
       >
-        {value}
-      </text>
+        <animate
+          attributeName="opacity"
+          values="0;1;0"
+          dur="2s"
+          repeatCount="indefinite"
+        />
+        <set attributeName="display" to={showAlert ? 'block' : 'none'} />
+      </circle>
     </svg>
   );
 }
