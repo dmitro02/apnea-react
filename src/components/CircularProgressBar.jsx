@@ -1,3 +1,5 @@
+const REST_COLOR = '#2d728c';
+
 function CircularProgressBar({
   radius,
   value,
@@ -30,11 +32,11 @@ function CircularProgressBar({
         stroke="#e0e0e0"
         strokeWidth="120"
       />
-      <circle // progress circle 2
+      <circle // rest circle
         r={radius}
         cx="150"
         cy="150"
-        stroke="green"
+        stroke={REST_COLOR}
         strokeWidth="114"
         strokeLinecap="butt"
         strokeDashoffset={strokeDashoffset}

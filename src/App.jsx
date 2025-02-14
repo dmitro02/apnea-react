@@ -2,12 +2,13 @@ import { useMemo, useState } from 'react';
 import './App.css';
 import Timer from './utils/timer';
 import CircularProgressBar from './components/CircularProgressBar';
+import { formatTime } from './utils/utils';
 
-const DURATION = 12;
+const DURATION = 120;
 const RADIUS = 90;
 const PROGRESS_COLOR = '#3287a8';
 const GET_READY_COLOR = '#de5952';
-const COUNTDDOWN_DURATION = 4;
+const COUNTDDOWN_DURATION = 8;
 
 function App() {
   const [elapsed, setElapsed] = useState(0);
@@ -53,8 +54,8 @@ function App() {
         recordTime={recordTime}
       />
       <div className="card">
-        <button onClick={isStarted ? record : start}>
-          {isStarted ? "record" : "start"}
+        <button onClick={isStarted ? record : start} disabled={!!recordTime}>
+          {isStarted ? 'record' : 'start'}
         </button>
         <button
           onClick={isStarted ? stop : reset}
@@ -62,9 +63,9 @@ function App() {
         >
           {isStarted ? 'stop' : 'reset'}
         </button>
+        <p>{formatTime(timeLeft)}</p>
         <p>elapsed: {elapsed}</p>
         <p>timeLeft: {timeLeft}</p>
-        <p>showAlert: {showAlert}</p>
       </div>
     </>
   );
