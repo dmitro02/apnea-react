@@ -1,11 +1,15 @@
-const REST_COLOR = '#2d728c';
+// const REST_COLOR = '#2d728c';
+const RADIUS = 90;
+const PROGRESS_COLOR = '#e0e0e0';
+const GET_READY_COLOR = '#de5952';
+
 
 function CircularProgressBar({
-  radius,
+  radius = RADIUS,
   value,
   max,
-  color,
-  alertColor,
+  color = PROGRESS_COLOR,
+  alertColor = GET_READY_COLOR,
   showAlert,
   recordTime,
 }) {
@@ -29,10 +33,10 @@ function CircularProgressBar({
         cx="150"
         cy="150"
         fill="transparent"
-        stroke="#e0e0e0"
-        strokeWidth="120"
+        stroke="#808080"
+        strokeWidth="130"
       />
-      <circle // rest circle
+      {/* <circle // rest circle
         r={radius}
         cx="150"
         cy="150"
@@ -42,13 +46,13 @@ function CircularProgressBar({
         strokeDashoffset={strokeDashoffset}
         fill="transparent"
         strokeDasharray={circumference}
-      />
+      /> */}
       <circle // progress circle
         r={radius}
         cx="150"
         cy="150"
         stroke={color}
-        strokeWidth="114"
+        strokeWidth="130"
         strokeLinecap="butt"
         strokeDashoffset={
           recordTime ? strokeDashoffsetRecord : strokeDashoffset
@@ -57,13 +61,14 @@ function CircularProgressBar({
         strokeDasharray={circumference}
       />
 
-      <circle // center circle
+      {/* <circle // center circle
         r="22"
         cx="150"
         cy="150"
-        fill="#e0e0e0"
-        strokeWidth="0"
-      />
+        fill="#transparent"
+        stroke="#e0e0e0"
+        strokeWidth="6"
+      /> */}
       <circle // alert circle
         r={radius + 66}
         cx="150"

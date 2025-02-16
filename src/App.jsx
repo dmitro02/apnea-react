@@ -4,11 +4,9 @@ import Timer from './utils/timer';
 import CircularProgressBar from './components/CircularProgressBar';
 import { formatTime } from './utils/utils';
 
-const DURATION = 120;
-const RADIUS = 90;
-const PROGRESS_COLOR = '#3287a8';
-const GET_READY_COLOR = '#de5952';
-const COUNTDDOWN_DURATION = 8;
+const DURATION = 10;
+const COUNTDDOWN_DURATION = 3;
+const NUMBER_OF_ROUNDS = 4;
 
 function App() {
   const [elapsed, setElapsed] = useState(0);
@@ -17,15 +15,27 @@ function App() {
 
   const timer = useMemo(() => new Timer(DURATION, setElapsed), []);
 
+  const records = [];
+
   const start = async () => {
     reset();
     setIsStarted(true);
-    await timer.start();
+    for (let i = 0; i < NUMBER_OF_ROUNDS; i++) {
+      const isInterrupted = await timer.start();
+      setRecordTime(0);
+      if (isInterrupted) {
+        break;
+      }
+    }
     setIsStarted(false);
+    console.log('records', records);
+    
   };
 
   const record = () => {
-    setRecordTime(elapsed);
+    const r = elapsed;
+    setRecordTime(r);
+    records.push(r);
   };
 
   const stop = () => {
@@ -40,16 +50,13 @@ function App() {
   };
 
   const timeLeft = DURATION - elapsed;
-  const showAlert = timeLeft <= COUNTDDOWN_DURATION;
+  const showAlert = isStarted && timeLeft <= COUNTDDOWN_DURATION;
 
   return (
     <>
       <CircularProgressBar
-        radius={RADIUS}
         value={elapsed}
         max={DURATION}
-        color={PROGRESS_COLOR}
-        alertColor={GET_READY_COLOR}
         showAlert={showAlert}
         recordTime={recordTime}
       />
@@ -66,6 +73,7 @@ function App() {
         <p>{formatTime(timeLeft)}</p>
         <p>elapsed: {elapsed}</p>
         <p>timeLeft: {timeLeft}</p>
+        <p>records: {records.toString()}</p>
       </div>
     </>
   );
